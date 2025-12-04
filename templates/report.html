@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Медицинское заключение</title>
+    <style>
+        /* Настройки страницы А4 */
+        @page {
+            size: A4;
+            margin: 2cm;
+            @frame footer_frame {           /* Статический футер (номер страницы) */
+                -pdf-frame-content: footerContent;
+                bottom: 1cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 1cm;
+
+            }
+        }
+
+        /* Основные стили шрифта */
+        body {
+            font-family: "Helvetica", "Arial", sans-serif; /* Попробует найти системный шрифт */
+            font-size: 12pt;
+            color: #333333;
+            line-height: 1.5;
+        }
+
+        /* Шапка документа */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24pt;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 10pt;
+            color: #7f8c8d;
+        }
+
+        /* Таблица с информацией о пациенте (вместо Flexbox) */
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .info-table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        .label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* Секции отчета */
+        .section {
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #2980b9;
+            border-bottom: 1px solid #bdc3c7;
+            margin-bottom: 5px;
+            padding-bottom: 2px;
+        }
+        .content-text {
+            text-align: justify;
+            margin-top: 5px;
+        }
+
+        /* Подвал (подпись) */
+        .signature-block {
+            margin-top: 50px;
+            width: 100%;
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            width: 200px;
+            display: inline-block;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Заголовок -->
+    <div class="header">
+        <h1>Медицинское Заключение</h1>
+        <p>Автоматизированная система ClinSpeech</p>
+    </div>
+
+    <!-- Информация о пациенте и враче -->
+    <table class="info-table">
+        <tr>
+            <td width="50%">
+                <span class="label">Пациент:</span><br>
+                {{ patient }}
+            </td>
+            <td width="50%">
+                <span class="label">Врач:</span><br>
+                {{ doctor }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="label">Дата приема:</span><br>
+                {{ date }}
+            </td>
+            <td>
+                <span class="label">ID документа:</span><br>
+                #{{ report_id|default:"---" }}
+            </td>
+        </tr>
+    </table>
+
+    <!-- Основной контент (данные от ИИ) -->
+
+    <div class="section">
+        <div class="section-title">Жалобы</div>
+        <div class="content-text">
+            {{ report.complaints|default:"Нет данных" }}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Анамнез (История болезни)</div>
+        <div class="content-text">
+            {{ report.anamnesis|default:"Нет данных" }}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Предварительный диагноз</div>
+        <div class="content-text" style="font-weight: bold;">
+            {{ report.diagnosis|default:"Диагноз не установлен" }}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Рекомендации</div>
+        <div class="content-text">
+            {{ report.recommendations|default:"Нет рекомендаций" }}
+        </div>
+    </div>
+
+    <!-- Место для подписи -->
+    <table class="signature-block">
+        <tr>
+            <td width="60%"></td>
+            <td width="40%" align="center">
+                <div style="border-top: 1px solid black; padding-top: 5px;">
+                    Подпись врача
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Номер страницы (технический блок для xhtml2pdf) -->
+    <div id="footerContent">
+        Сгенерировано автоматически системой ClinSpeech | Страница <pdf:pagenumber>
+    </div>
+
+</body>
+</html>
